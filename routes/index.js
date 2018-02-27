@@ -4,13 +4,16 @@ var express = require('express');
 var router = express.Router();
 const fs = require('fs')
 const common = require('../util/common')
-const baiduSDK = require('baidu-aip-sdk')
-const AipSpeechClient = require("baidu-aip-sdk").speech;
+
 var player = require('play-sound')()
 const path = require('path')
 const config = require('config')
 const baiduConfig = config.get('baiduConfig')
 
+const db = require('../mysql/queries/index')
+const knex = require('../mysql/connection')
+const faceService = require('../services/faceService')
+const voiceService = require('../services/voiceService')
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -21,25 +24,15 @@ router.get('/', function (req, res) {
 
 router.get('/test', function (req, res) {
 
-  var aipFace = new baiduSDK.face(baiduConfig.APP_NAME, baiduConfig.APP_KEY, baiduConfig.APP_SECRET)
+  let imgPath = path.join(__dirname, '../faces/uploads/jk.jpg')
 
-  let imgPath = path.join(__dirname, '../faces/uploads/顾嘉晟.png')
-  console.log(imgPath)
-  let stream = common.base64Encode(imgPath)
-  
-  var options = {};
-  options["max_face_num"] = "5";
-  options["face_fields"] = "age,beauty,expression,faceshape,gender,glasses,landmark,race,qualities";
-
-  aipFace.multiIdentify(baiduConfig.GROUP_ID, stream).then((result) => {
-    if (result.result.length > 0) {
-      
-    }
+  faceService.multiIdentify(imgPath).then(names => voiceService.composeGreeting(names)).then(content => voiceService.text2Audio(content)).catch((err) => {
+    if (err) console.log(err)
   })
-
   res.send('123')
 })
 
+// Compose audios and play
 router.get('/s', function (req, res) {
 
   var speechClient = new AipSpeechClient(baiduConfig.APP_ID, baiduConfig.APP_KEY, baiduConfig.APP_SECRET)
