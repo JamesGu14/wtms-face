@@ -84,6 +84,7 @@
 
 
     "globals": {
-        "require": false
+        "require": false,
+        "Promise": true
     }
 }
