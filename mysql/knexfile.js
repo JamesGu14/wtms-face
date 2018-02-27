@@ -5,9 +5,10 @@ module.exports = {
   development: {
     client: 'mysql',
     connection: {
+      host: '106.14.7.201',
       database: 'wtms_face_dev',
-      user:     'root',
-      password: 'root'
+      user:     'wtmsdev',
+      password: '2018GoGo!'
     },
     pool: {
       min: 2,
@@ -21,6 +22,7 @@ module.exports = {
   staging: {
     client: 'mysql',
     connection: {
+      host: '106.14.7.201',
       database: 'wtms_face_stg',
       user:     'root',
       password: 'root'
@@ -37,6 +39,7 @@ module.exports = {
   production: {
     client: 'mysql',
     connection: {
+      host: '106.14.7.201',
       database: 'wtms_face',
       user:     'root',
       password: 'root'
@@ -49,5 +52,4 @@ module.exports = {
       tableName: 'knex_migrations'
     }
   }
-
 };

@@ -2,10 +2,42 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <meta charset='utf-8'>
+    <link rel="stylesheet" href="/stylesheets/main.css" type="text/css" media="all">
+    <link rel="stylesheet" href='/stylesheets/bootstrap.min.css' type='text/css'>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <br /><br /><br /><br />
+    <div id="container">
+      <div class="row">
+          <div class="col-md-8 offset-md-2" id="panel">
+            <br />
+            <p class="btn btn-primary" id="start">Start Monitoring</p>
+            <p class="btn btn-primary" id="upload-img">Detect</p>
+            <br /><br />
+            <h2 style="text-align: center">Welcome to PwC</h2>
+            <br /><br />
+            <div class="input-group input-group-lg">
+              <input type="text" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm" id="notification" disabled>
+            </div>
+          </div>
+      </div>
+    </div>
+    
+    <div class="contentarea">
+      <div class="camera">
+        <video id="video" style="display: none">Video stream not available.</video>
+        <button id="startbutton" style="">Take photo</button>
+      </div>
+      <canvas id="canvas">
+      </canvas>
+      <div class="output">
+        <img id="photo" style="" alt="The screen capture will appear in this box."> 
+      </div>
+    </div>
+
+    <script src="/javascripts/jquery-3.3.1.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script src="/javascripts/capture.js"></script>
   </body>
 </html>

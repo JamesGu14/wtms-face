@@ -4,7 +4,6 @@ const AipSpeechClient = require("baidu-aip-sdk").speech
 const config = require('config')
 const baiduConfig = config.get('baiduConfig')
 const APP_ID = baiduConfig.APP_ID
-const APP_NAME = baiduConfig.APP_NAME
 const APP_KEY = baiduConfig.APP_KEY
 const APP_SECRET = baiduConfig.APP_SECRET
 const Promise = require('bluebird')
@@ -16,10 +15,17 @@ function composeGreeting(names) {
   
   return new Promise(function(resolve, reject) {
 
-    if (names == null || names.length <= 0) {
+    if (names === null || names.length <= 0) {
       reject()
     }
-    let content = `早上好，${names.join('，')} ${names.length}位小朋友，来学习写程序吧`
+    
+    let content = ''
+    if (names.length > 1) {
+      content = `早上好，${names.join('，')} ${names.length}位小朋友，你们早上好呀`
+    } else {
+      content = `早上好，${names.join('，')} 小朋友，你长得真好看`
+    }
+    
     resolve(content)
   })
 }

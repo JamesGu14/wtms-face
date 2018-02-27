@@ -160,7 +160,7 @@ $(document).ready(function () {
     if (started) {
        takepicture();
     }
-  }, 3000)
+  }, 10000)
 
   $('#upload-img').click(function () {
     takepicture();

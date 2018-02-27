@@ -19,16 +19,16 @@ function multiIdentify(imgPath) {
     
     var faceClient = new AipFaceClient(APP_NAME, APP_KEY, APP_SECRET)
 
-    console.log(imgPath)
     let stream = common.base64Encode(imgPath)
     
     // var options = {};
     // options["detect_top_num"] = "5";
     // options["face_fields"] = "age,beauty,expression,faceshape,gender,glasses,landmark,race,qualities";
 
-    var options = {};
-    options["detect_top_num"] = "5";
-    options["user_top_num"] = "5";
+    var options = {
+      'detect_top_num': 5,
+      'user_top_num': 5
+    };
 
     faceClient.multiIdentify(GROUP_ID, stream, options).then((result) => {
       if (result.result.length > 0) {
