@@ -1,0 +1,17 @@
+{
+  "mysqlConfig": {
+    "host": "localhost",
+    "port": "3306",
+    "dbName": "wtms_face",
+    "username": "root",
+    "password": "root",
+    "dialect": "mysql"
+  },
+  "baiduConfig": {
+    "APP_NAME": "维特牧思进店",
+    "APP_ID": "10854632",
+    "APP_KEY": "zGRNORgiyudwaD9eQ0nVyTAk",
+    "APP_SECRET": "HjIDChq0S5HiYzYz9clVt99DygbCXhHI",
+    "GROUP_ID": "testlib"
+  }
+}
