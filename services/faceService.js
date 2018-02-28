@@ -51,7 +51,7 @@ function multiIdentify(imgPath) {
     }
 
     faceClient.multiIdentify(GROUP_ID, stream, options).then((result) => {
-      if (result.result.length > 0) {
+      if (result.result !== null && result.result.length > 0) {
         let faces = _.filter(result.result, function(u) {
           return u.scores.length > 0 && u.scores[0] > 80
         })
