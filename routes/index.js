@@ -29,7 +29,11 @@ router.post('/image', upload.single('file'), function (req, res) {
     if (err) {
       throw err
     }
-    faceService.multiIdentify(newpath).then(names => voiceService.composeGreeting(names)).then(content => voiceService.text2Audio(content)).catch((err) => {
+    faceService.multiIdentify(newpath)
+      .then(users => voiceService.filterRecentGreeted(users))
+      .then(users => voiceService.composeGreeting(users))
+      .then((userContentCombo) => voiceService.queueAudioMessage(userContentCombo.content, userContentCombo.users))
+      .catch((err) => {
       if (err) {
         console.log(err)
       }
@@ -39,18 +43,6 @@ router.post('/image', upload.single('file'), function (req, res) {
       })
     })
   })
-})
-
-router.get('/test', function (req, res) {
-
-  let imgPath = path.join(__dirname, '../faces/uploads/jk.jpg')
-
-  faceService.multiIdentify(imgPath).then(names => voiceService.composeGreeting(names)).then(content => voiceService.text2Audio(content)).catch((err) => {
-    if (err) {
-      console.log(err)
-    }
-  })
-  res.send('123')
 })
 
 module.exports = router

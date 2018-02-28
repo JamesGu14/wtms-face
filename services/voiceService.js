@@ -3,6 +3,7 @@
 const AipSpeechClient = require("baidu-aip-sdk").speech
 const config = require('config')
 const baiduConfig = config.get('baiduConfig')
+const programConfig = config.get('programConfig')
 const APP_ID = baiduConfig.APP_ID
 const APP_KEY = baiduConfig.APP_KEY
 const APP_SECRET = baiduConfig.APP_SECRET
@@ -10,26 +11,117 @@ const Promise = require('bluebird')
 const path = require('path')
 const fs = require('fs')
 var player = require('play-sound')()
+const knex = require('../mysql/connection.js')
+const moment = require('moment')
+const _ = require('lodash')
 
-function composeGreeting(names) {
-  
-  return new Promise(function(resolve, reject) {
+// Query db to check if any queue message
+function queryQueueAudio() {
 
-    if (names === null || names.length <= 0) {
-      reject()
-    }
-    
-    let content = ''
-    if (names.length > 1) {
-      content = `早上好，${names.join('，')} ${names.length}位小朋友，你们早上好呀`
-    } else {
-      content = `早上好，${names.join('，')} 小朋友，你长得真好看`
-    }
-    
-    resolve(content)
+  return new Promise((resolve, reject) => {
+
+    knex.from('greetingQueue').select('*').where({ played: false }).limit(1)
+      .then((greeting) => {
+
+        if (greeting && greeting.length === 1) {
+
+          text2Audio(greeting[0].message)
+          knex.from('greetingQueue').where({ id: greeting[0].id }).update({ played: true, playedAt: new Date() })
+            .then(() => {
+              resolve()
+            })
+        } else {
+          reject('No unplayed messages')
+        }
+      })
+      .catch(function(err) {
+        reject(err)
+      })
   })
 }
 
+function filterRecentGreeted(users) {
+
+  return new Promise((resolve, reject) => {
+
+    if (users === null || users.length <= 0) {
+      reject('No face found from DB')
+    }
+
+    let childIdArr = []
+    users.forEach(u => {
+      childIdArr.push(u.id)
+    })
+
+    knex.from('greetingQueue').whereIn('childId', childIdArr)
+      .andWhere('createdAt', '>', moment().subtract(programConfig.recoInterval, 'seconds').format('YYYY-MM-DD HH:mm:ss')).then((result) => {
+
+        let recentPlayedChildId = []
+        result.forEach(r => {
+          
+          recentPlayedChildId.push(r.id)
+        })
+
+        resolve(_.reject(users, function(o) {
+          return recentPlayedChildId.indexOf(o.id) >= 0
+        }))
+      })
+  })
+}
+
+// TODO: 随机生成问候内容
+function composeGreeting(users) {
+  
+  return new Promise(function(resolve, reject) {
+
+    if (users === null || users.length <= 0) {
+      reject('No users not greeted lately')
+    }
+    
+    let names = []
+    users.forEach(u => {
+      names.push(u.fullName)
+    })
+
+    let content = ''
+    if (users.length > 1) {
+      content = `早上好，${names.join('，')} ${names.length}位小朋友，你们早上好呀`
+    } else {
+      content = `早上好，${names} 小朋友`
+    }
+    
+    resolve({
+      content: content,
+      users: users
+    })
+  })
+}
+
+function queueAudioMessage(content, users) {
+
+  return new Promise((resolve, reject) => {
+
+    let newUsers = []
+    users.forEach(u => {
+      newUsers.push({
+        message: content,
+        createdAt: new Date(),
+        childId: u.id,
+        played: true
+      })
+    })
+    // only make the first as not played
+    newUsers[0].played = false
+
+    knex('greetingQueue').insert(newUsers).then(() => {
+      resolve()
+    }).catch((err) => {
+      reject(err)
+    })
+  })
+}
+
+// BAIDU API compose audio
 function text2Audio(content) {
 
   return new Promise(function(resolve, reject) {
@@ -63,5 +155,8 @@ function text2Audio(content) {
 
 module.exports = {
   composeGreeting: composeGreeting,
-  text2Audio: text2Audio
+  text2Audio: text2Audio,
+  queryQueueAudio: queryQueueAudio,
+  queueAudioMessage: queueAudioMessage,
+  filterRecentGreeted: filterRecentGreeted
 }

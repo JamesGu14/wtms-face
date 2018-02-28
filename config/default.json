@@ -5,5 +5,9 @@
     "APP_KEY": "zGRNORgiyudwaD9eQ0nVyTAk",
     "APP_SECRET": "HjIDChq0S5HiYzYz9clVt99DygbCXhHI",
     "GROUP_ID": "testlib"
+  }, 
+  "programConfig": {
+    "ageThreshold": 50,
+    "recoInterval": 3600
   }
 }

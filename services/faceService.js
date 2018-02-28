@@ -66,13 +66,9 @@ function multiIdentify(imgPath) {
         })
 
         // TODO: get kids' names from DB by uid
-        db.child.getAll().whereIn('uid', uidArr).then(function(rows) {
-          let names = []
-          rows.forEach(r => {
-            names.push(r.fullName)
-          })
-
-          resolve(names)
+        db.child.getAll().whereIn('uid', uidArr).then(function(users) {
+          
+          resolve(users)
         })
         .catch(function(error) {
           console.error(error)
@@ -158,7 +154,6 @@ function getUsers() {
     })
   })
 }
-
 
 
 module.exports = {

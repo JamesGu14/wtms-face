@@ -6,9 +6,12 @@ const multer = require('multer');
 const upload = multer({ dest: 'faces/group/user' })
 const uuidv1 = require('uuid/v1')
 const fs = require('fs')
-const db = require('../mysql/queries/index')
 const faceService = require('../services/faceService')
 const pinyin = require('pinyin')
+const knex = require('../mysql/connection.js')
+const config = require('config')
+const programConfig = config.get('programConfig')
+const _ = require('lodash')
 
 router.get('/', function(req, res) {
   
@@ -27,38 +30,55 @@ router.post('/face', upload.single('avatar'), function(req, res) {
   let newname = 'img-' + uuidv1() + '.png'
   let newpath = filepath.replace(filename, newname)
   let personName = req.body.personName
-  let facesetTokenId = req.body.faceset
 
   fs.renameSync(filepath, newpath)
 
   faceService.detect(newpath).then((result) => {
 
     if (result.length !== 1) {
-      res.json({
-        'message': 'Nothing or more than 1 faces detected'
+      return res.json({
+        'status': 'fail',
+        'message': 'Nothing or more than one faces detected'
       })
-      return
     }
 
-    faceService.updateUser()
-  })
-
-          facepp.addFace(faceset.token, faces[0].face_token, function(success) {
-            if (success) {
-              // Save to DB
-              mysql.Face.create({
-                token: faces[0].face_token,
-                title: personName,
-                comment: newpath,
-                facesetId: facesetTokenId
-              })
-            }
-          })
-        }
+    if (result[0].age > programConfig.ageThreshold) {
+      return res.json({
+        'status': 'fail',
+        'message': 'Are you sure this kid is less than 10 years old?'
       })
+    }
+
+    let uid = pinyin(personName, {
+      style: pinyin.STYLE_NORMAL
     })
+
+    uid = _.flattenDeep(uid).join('')
+    let newUid = ''
+
+    // Save to db
+    knex('child')
+      .returning('id')
+      .insert({
+        fullName: personName,
+        imgPath: newpath,
+        uid: ''
+      })
+      .then((id) => {
+        
+        newUid = `${uid}_${id}`
+        knex('child').update({
+          uid: newUid
+        })
+        .where({ id: id })
+        .then(() => {
+          
+          faceService.updateUser(newUid, personName, newpath).then(() => {
+            res.send('image received')
+          })
+        })
+      })
   })
-  res.send('image received')
 })
 
 module.exports = router

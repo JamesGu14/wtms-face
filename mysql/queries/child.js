@@ -1,3 +1,5 @@
+'use strict'
+
 const knex = require('../connection.js')
 
 function getAll() {

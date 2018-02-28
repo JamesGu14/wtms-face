@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var system = require('./routes/system')
+var voiceService = require('./services/voiceService')
 
 var app = express();
 
@@ -46,5 +47,16 @@ app.use(function(err, req, res) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// Query message queue by interval
+setInterval(function() {
+    
+  voiceService.queryQueueAudio()
+    .catch((err) => {
+      if (err) {
+        console.log(err)
+      }
+    })
+}, 2000)
 
 module.exports = app;
