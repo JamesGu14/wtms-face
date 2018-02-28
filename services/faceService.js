@@ -26,6 +26,9 @@ function detect(imgPath) {
 
     faceClient.detect(stream, options).then(function(result) {
 
+      if (result.result === null) {
+        reject()
+      }
       resolve(result.result)
     }).catch(function(err) {
       console.log(err)

@@ -59,7 +59,7 @@ function filterRecentGreeted(users) {
         let recentPlayedChildId = []
         result.forEach(r => {
           
-          recentPlayedChildId.push(r.id)
+          recentPlayedChildId.push(r.childId)
         })
 
         resolve(_.reject(users, function(o) {
