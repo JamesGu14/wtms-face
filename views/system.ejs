@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta charset='utf-8'>
+    <link rel="stylesheet" href='/stylesheets/bootstrap.min.css' type='text/css'>
+  </head>
+  <body>
+    <div style="margin: 50px">
+
+      <div style="width: 50%">
+        <h2>Upload Faces</h2>
+        <form name="addFaceForm" id="addFaceForm" action="">
+          <div class="form-group">
+            <label for="personName">Person Name</label>
+            <input type="text" class="form-control" id="personName" name="personName" placeholder="Enter Chinese Name">
+          </div>
+          <div class="form-group">
+            <label for="avatar">Profile Picture</label>
+            <input type="file" class="form-control-file" id="avatar" name="avatar">
+          </div>
+          <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+      </div>
+      
+      <br><br>
+      <h5>Existing Faces</h5>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <td>Full Name</td>
+            <td>UID</td>
+          </tr>
+        </thead>
+        <tbody class="table-striped">
+          <% users.forEach(function(user) { %>
+          <tr>
+            <td><%= user.fullName %></td>
+            <td><%= user.uid %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    
+    <script src="/javascripts/jquery-3.3.1.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $("form#addFaceForm").submit(function(e) {
+        e.preventDefault();    
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '/system/face',
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            error:function(err){
+              console.error(err);
+            },
+            success: function (data) {
+              alert(data)
+            },
+            complete:function(){
+                console.log("Request finished.");
+            }
+          });
+        });
+      })
+    </script>
+  </body>
+</html>

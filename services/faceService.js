@@ -12,13 +12,33 @@ const common = require('../util/common')
 const _ = require('lodash')
 const db = require('../mysql/queries/index')
 
+function detect(imgPath) {
+
+  return new Promise(function(resolve, reject) {
+
+    let faceClient = new AipFaceClient(APP_NAME, APP_KEY, APP_SECRET)
+    let stream = common.base64Encode(imgPath)
+
+    var options = {
+      'max_face_num': '2',
+      'face_fields': 'age,gender'
+    }
+
+    faceClient.detect(stream, options).then(function(result) {
+
+      resolve(result.result)
+    }).catch(function(err) {
+      console.log(err)
+      reject(err)
+    })
+  })
+}
 
 function multiIdentify(imgPath) {
 
   return new Promise(function(resolve, reject) {
     
-    var faceClient = new AipFaceClient(APP_NAME, APP_KEY, APP_SECRET)
-
+    let faceClient = new AipFaceClient(APP_NAME, APP_KEY, APP_SECRET)
     let stream = common.base64Encode(imgPath)
     
     // var options = {};
@@ -28,7 +48,7 @@ function multiIdentify(imgPath) {
     var options = {
       'detect_top_num': 5,
       'user_top_num': 5
-    };
+    }
 
     faceClient.multiIdentify(GROUP_ID, stream, options).then((result) => {
       if (result.result.length > 0) {
@@ -63,6 +83,89 @@ function multiIdentify(imgPath) {
   })
 }
 
+function updateUser(uid, userInfo, imgPath) {
+
+  return new Promise(function(resolve, reject) {
+
+    let faceClient = new AipFaceClient(APP_NAME, APP_KEY, APP_SECRET)
+    let stream = common.base64Encode(imgPath)
+    
+    var options = {
+      'action_type': 'replace'
+    }
+
+    faceClient.updateUser(uid, userInfo, GROUP_ID, stream, options).then(function(result) {
+      
+      console.log(`Face saves succeed - ${JSON.stringify(result)}`)
+      resolve(result)
+    }).catch(function(err) {
+      // 如果发生网络错误
+      console.log(err);
+      reject(err)
+    })
+  })
+}
+
+function getGrouplist() {
+
+  return new Promise(function(resolve, reject) {
+    
+    let faceClient = new AipFaceClient(APP_NAME, APP_KEY, APP_SECRET)
+    var options = {
+      'start': 0,
+      'num': 50
+    }
+
+    faceClient.getGrouplist(options).then(function(result) {
+      resolve(result.result)
+    }).catch(function(err) {
+      console.log(err);
+      reject(err)
+    })
+  })
+}
+
+function getGroupUsers(groupId) {
+
+  return new Promise(function(resolve, reject) {
+
+    let faceClient = new AipFaceClient(APP_NAME, APP_KEY, APP_SECRET)
+    var options = {
+      'start': 0,
+      'num': 50
+    }
+
+    faceClient.getGroupUsers(groupId, options).then(function(result) {
+      resolve(result.result)
+    }).catch(function(err) {
+      // 如果发生网络错误
+      console.log(err);
+      reject(err)
+    })
+  })
+}
+
+function getUsers() {
+
+  return new Promise(function(resolve, reject) {
+    
+    db.child.getAll().then((faces) => {
+
+      resolve(faces)
+    }).catch(function(err) {
+      console.log(err)
+      reject(err)
+    })
+  })
+}
+
+
+
 module.exports = {
-  multiIdentify: multiIdentify
+  detect: detect,
+  multiIdentify: multiIdentify,
+  updateUser: updateUser,
+  getGrouplist: getGrouplist,
+  getGroupUsers: getGroupUsers,
+  getUsers: getUsers
 }

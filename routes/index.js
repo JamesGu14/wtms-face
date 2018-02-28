@@ -6,7 +6,9 @@ const path = require('path')
 const faceService = require('../services/faceService')
 const voiceService = require('../services/voiceService')
 const multer = require('multer');
-const upload = multer({ dest: 'faces/uploads' })
+const upload = multer({
+  dest: 'faces/uploads'
+})
 const uuidv1 = require('uuid/v1')
 const fs = require('fs')
 
@@ -17,13 +19,13 @@ router.get('/', function (req, res) {
   })
 })
 
-router.post('/image', upload.single('file'), function(req, res) {
+router.post('/image', upload.single('file'), function (req, res) {
   let filename = req.file.filename
   let filepath = req.file.path
   let newname = 'img-' + uuidv1() + '.png'
   let newpath = filepath.replace(filename, newname)
 
-  fs.rename(filepath, newpath, function(err) {
+  fs.rename(filepath, newpath, function (err) {
     if (err) {
       throw err
     }
@@ -32,7 +34,9 @@ router.post('/image', upload.single('file'), function(req, res) {
         console.log(err)
       }
 
-      res.json({status: 'success'})
+      res.json({
+        status: 'success'
+      })
     })
   })
 })
