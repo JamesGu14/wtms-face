@@ -1,16 +1,17 @@
 'use strict'
 
+const path = require('path')
+const fs = require('fs')
+const Async = require('async')
 var express = require('express')
 var router = express.Router()
-const path = require('path')
 const faceService = require('../services/faceService')
 const voiceService = require('../services/voiceService')
+const uuidv1 = require('uuid/v1')
 const multer = require('multer');
 const upload = multer({
   dest: 'public/faces/uploads'
 })
-const uuidv1 = require('uuid/v1')
-const fs = require('fs')
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -19,7 +20,13 @@ router.get('/', function (req, res) {
   })
 })
 
-router.post('/image', upload.single('file'), function (req, res) {
+router.post('/detect', upload.single('file'), function (req, res) {
+
+  var maxSize = 0.3 * 1000 * 1000 // 300kb max
+  if (req.file.size > maxSize) {
+    return res.send('上传失败，文件超过2MB')
+  }
+
   let filename = req.file.filename
   let filepath = req.file.path
   let newname = 'img-' + uuidv1() + '.png'
@@ -30,22 +37,20 @@ router.post('/image', upload.single('file'), function (req, res) {
       throw err
     }
     faceService.multiIdentify(newpath)
-      .then(users => voiceService.filterRecentGreeted(users)
-        .then(users => voiceService.composeGreeting(users))
-          .then((userContentCombo) => voiceService.queueAudioMessage(userContentCombo.content, userContentCombo.users))
-            .then(() => {
-              return res.json({
-                status: 'success'
-              })
-            }))
+      .then(users => voiceService.filterRecentGreeted(users))
+      .then(users => voiceService.composeGreeting(users))
+      .then(userContentCombo => voiceService.queueAudioMessage(userContentCombo.content, userContentCombo.users))
+      .then(() => {
+        return res.json({
+          status: 'success'
+        })
+      })
       .catch((err) => {
         if (err) {
           console.log(err)
         }
 
-        return res.json({
-          status: 'failed'
-        })
+        return res.send('失败')
       })
   })
 })

@@ -126,7 +126,7 @@ function callApi(data) {
 
   // Submit Form and upload file
   $.ajax({
-    url: "/image",
+    url: "/detect",
     data: fd,// the formData function is available in almost all new browsers.
     type: "POST",
     contentType: false,
@@ -134,10 +134,8 @@ function callApi(data) {
     cache: false,
     dataType: "json", // Change this according to your response from the server.
   }).done(function (data) {
-    if (data.match) {
-      $('#notification').val(data.msg)
-    } else {
-      $('#notification').text('__')
+    if (data) {
+      $('#notification').val(data)
     }
   });
 }
@@ -171,7 +169,7 @@ $(document).ready(function () {
  * Convert a base64 string in a Blob according to the data and contentType.
  * 
  * @param b64Data {String} Pure base64 string without contentType
- * @param contentType {String} the content type of the file i.e (image/jpeg - image/png - text/plain)
+ * @param contentType {String} the content type of the file i.e (detect/jpeg - image/png - text/plain)
  * @param sliceSize {Int} SliceSize to process the byteCharacters
  * @see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
  * @return Blob
