@@ -48,15 +48,4 @@ app.use(function(err, req, res) {
   res.render('error')
 })
 
-// Query message queue by interval
-setInterval(function() {
-    
-  voiceService.queryQueueAudio()
-    .catch((err) => {
-      if (err) {
-        console.log(err)
-      }
-    })
-}, 2000)
-
 module.exports = app

@@ -7,34 +7,47 @@
     <link rel="stylesheet" href='/stylesheets/bootstrap.min.css' type='text/css'>
   </head>
   <body>
-    <br /><br /><br /><br />
+    <br /><br />
     <div id="container">
       <div class="row">
-          <div class="col-md-8 offset-md-2" id="panel">
-            <br />
-            <p class="btn btn-primary" id="start">Start Monitoring</p>
-            <p class="btn btn-primary" id="upload-img">Detect</p>
-            <br /><br />
-            <h2 style="text-align: center">Welcome to PwC</h2>
-            <br /><br />
-            <div class="input-group input-group-lg">
-              <input type="text" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm" id="notification" disabled>
-            </div>
+        <div class="col-md-10 offset-md-1" id="panel">
+          <br />
+          <h2>维特牧思早教中心 人工智能APP</h2>
+          <br />
+          <p class="btn btn-primary" id="start">开始程序</p>
+          <!-- <p class="btn btn-primary" id="upload-img">Detect</p> -->
+          <br /><br />
+          <table>
+            <tr>
+              <td>摄像头画面</td>
+              <td>识别图像</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="camera">
+                  <video id="video">Video stream not available.</video>
+                  <!-- <button id="startbutton" style="">Take photo</button> -->
+                </div>
+              </td>
+              <td>
+                <div class="output">
+                  <canvas id="canvas"></canvas>
+                  <img id="photo" style="" alt="The screen capture will appear in this box."> 
+                </div>
+              </td>
+            </tr>
+          </table>
+          <div class="contentarea">
+            
+            
+            
           </div>
+          <br /><br />
+        </div>
       </div>
     </div>
     
-    <div class="contentarea">
-      <div class="camera">
-        <video id="video" style="display: none">Video stream not available.</video>
-        <button id="startbutton" style="">Take photo</button>
-      </div>
-      <canvas id="canvas">
-      </canvas>
-      <div class="output">
-        <img id="photo" style="" alt="The screen capture will appear in this box."> 
-      </div>
-    </div>
+    
 
     <script src="/javascripts/jquery-3.3.1.min.js"></script>
     <script src="/javascripts/bootstrap.min.js"></script>

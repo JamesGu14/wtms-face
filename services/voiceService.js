@@ -127,7 +127,7 @@ function text2Audio(content) {
   return new Promise(function(resolve, reject) {
 
     let speechClient = new AipSpeechClient(APP_ID, APP_KEY, APP_SECRET)
-    let audioPath = path.join(__dirname, '../faces/audio.mp3')
+    let audioPath = path.join(__dirname, '../public/faces/audio.mp3')
     // 语音合成
     speechClient.text2audio(content).then(function (result) {
       if (result.data) {

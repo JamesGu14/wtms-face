@@ -5,10 +5,10 @@ module.exports = {
   development: {
     client: 'mysql',
     connection: {
-      host: '106.14.7.201',
+      host: 'localhost',
       database: 'wtms_face_dev',
-      user:     'wtmsdev',
-      password: '2018GoGo!'
+      user:     'root',
+      password: 'root'
     },
     pool: {
       min: 2,

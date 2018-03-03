@@ -3,7 +3,7 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer');
-const upload = multer({ dest: 'faces/group/user' })
+const upload = multer({ dest: 'public/faces/group/user' })
 const uuidv1 = require('uuid/v1')
 const fs = require('fs')
 const faceService = require('../services/faceService')
@@ -25,6 +25,12 @@ router.get('/', function(req, res) {
 })
 
 router.post('/face', upload.single('avatar'), function(req, res) {
+
+  var maxSize = 2 * 1000 * 1000 // 2mb max
+  if (req.file.size > maxSize) {
+    return res.send('上传失败，文件超过2MB')
+  }
+
   let filename = req.file.filename
   let filepath = req.file.path
   let newname = 'img-' + uuidv1() + '.png'
@@ -74,7 +80,7 @@ router.post('/face', upload.single('avatar'), function(req, res) {
         .then(() => {
           
           faceService.updateUser(newUid, personName, newpath).then(() => {
-            res.send('image received')
+            res.send('上传成功')
           })
         })
       })

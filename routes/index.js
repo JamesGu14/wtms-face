@@ -7,7 +7,7 @@ const faceService = require('../services/faceService')
 const voiceService = require('../services/voiceService')
 const multer = require('multer');
 const upload = multer({
-  dest: 'faces/uploads'
+  dest: 'public/faces/uploads'
 })
 const uuidv1 = require('uuid/v1')
 const fs = require('fs')
@@ -30,18 +30,23 @@ router.post('/image', upload.single('file'), function (req, res) {
       throw err
     }
     faceService.multiIdentify(newpath)
-      .then(users => voiceService.filterRecentGreeted(users))
-      .then(users => voiceService.composeGreeting(users))
-      .then((userContentCombo) => voiceService.queueAudioMessage(userContentCombo.content, userContentCombo.users))
+      .then(users => voiceService.filterRecentGreeted(users)
+        .then(users => voiceService.composeGreeting(users))
+          .then((userContentCombo) => voiceService.queueAudioMessage(userContentCombo.content, userContentCombo.users))
+            .then(() => {
+              return res.json({
+                status: 'success'
+              })
+            }))
       .catch((err) => {
-      if (err) {
-        console.log(err)
-      }
+        if (err) {
+          console.log(err)
+        }
 
-      res.json({
-        status: 'success'
+        return res.json({
+          status: 'failed'
+        })
       })
-    })
   })
 })
 

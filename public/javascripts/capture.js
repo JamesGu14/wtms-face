@@ -67,10 +67,10 @@ function startup() {
     }
   }, false);
 
-  startbutton.addEventListener('click', function (ev) {
-    takepicture();
-    ev.preventDefault();
-  }, false);
+  // startbutton.addEventListener('click', function (ev) {
+  //   takepicture();
+  //   ev.preventDefault();
+  // }, false);
 
   clearphoto();
 }
@@ -160,7 +160,7 @@ $(document).ready(function () {
     if (started) {
        takepicture();
     }
-  }, 2000)
+  }, 5000)
 
   $('#upload-img').click(function () {
     takepicture();

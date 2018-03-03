@@ -49,6 +49,7 @@
 #panel {
   background-color: #f7f7f9;
   min-height: 400px;
+  text-align: center
 }
 
 #notification {

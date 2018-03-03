@@ -8,6 +8,6 @@
   }, 
   "programConfig": {
     "ageThreshold": 50,
-    "recoInterval": 3600
+    "recoInterval": 15
   }
 }
