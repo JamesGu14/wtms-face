@@ -133,9 +133,20 @@ function callApi(data) {
     processData: false,
     cache: false,
     dataType: "json", // Change this according to your response from the server.
-  }).done(function (data) {
-    if (data) {
-      $('#notification').val(data)
+  }).done(function( result ) {
+    if (result.success) {
+      // var audioSection = $('hidden-audio').html()
+      // $('hidden-audio').html(audioSection)
+
+      // var audio = document.getElementsByTagName('audio')[0];
+      // var source = document.getElementsByTagName('source')[0];
+      // source.src = '/faces/audio.mp3'
+      // audio.load()
+      // audio.play()
+
+      var audio = new Audio('/faces/audio.mp3');
+      audio.load();
+      audio.play();   
     }
   });
 }

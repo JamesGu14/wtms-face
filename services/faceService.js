@@ -11,6 +11,7 @@ const Promise = require('bluebird')
 const common = require('../util/common')
 const _ = require('lodash')
 const db = require('../mysql/queries/index')
+const knex = require('../mysql/connection.js')
 
 function detect(imgPath) {
 
@@ -59,24 +60,33 @@ function multiIdentify(imgPath) {
           return u.scores.length > 0 && u.scores[0] > 80
         })
 
-        let uids = _.map(faces, function(f) {
-          return _.pick(f, ['uid']);
-        });
+        if (faces.length <= 0) {
+          console.log('No faces matching over 80%')
+          reject()
+        }
 
         let uidArr = []
-        uids.forEach(i => {
-          uidArr.push(i.uid)
+        faces.forEach(f => {
+          console.log('Detected face: ' + f.uid + '')
+          console.log(`Detected face: ${f.uid}, confidence: ${f.scores[0]}`)
+          uidArr.push(f.uid)
         })
 
         // TODO: get kids' names from DB by uid
-        db.child.getAll().whereIn('uid', uidArr).then(function(users) {
-          
+        knex('child').whereIn('uid', uidArr).select('*').then(function(users) {
+          if (uidArr.length > 0 && users.length <= 0) {
+            console.log('Warning: UID in Baidu Cloud not in our DB')
+            reject()
+          }
           resolve(users)
         })
         .catch(function(error) {
           console.error(error)
           reject(error)
         })
+      } else {
+        console.log('No faces detected')
+        reject()
       }
     }).catch((err) => {
 

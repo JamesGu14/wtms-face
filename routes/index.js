@@ -2,13 +2,13 @@
 
 const path = require('path')
 const fs = require('fs')
-const Async = require('async')
 var express = require('express')
 var router = express.Router()
 const faceService = require('../services/faceService')
 const voiceService = require('../services/voiceService')
 const uuidv1 = require('uuid/v1')
 const multer = require('multer');
+const common = require('../util/common')
 const upload = multer({
   dest: 'public/faces/uploads'
 })
@@ -28,6 +28,12 @@ router.post('/detect', upload.single('file'), function (req, res) {
   }
 
   let filename = req.file.filename
+
+  // Delete faces/uploads folder
+  let uploadPath = path.join(__dirname, '../public/faces/uploads')
+  common.clearDir(uploadPath, [filename])
+
+  
   let filepath = req.file.path
   let newname = 'img-' + uuidv1() + '.png'
   let newpath = filepath.replace(filename, newname)
@@ -40,9 +46,10 @@ router.post('/detect', upload.single('file'), function (req, res) {
       .then(users => voiceService.filterRecentGreeted(users))
       .then(users => voiceService.composeGreeting(users))
       .then(userContentCombo => voiceService.queueAudioMessage(userContentCombo.content, userContentCombo.users))
+      .then(() => voiceService.queryQueueAudio())
       .then(() => {
         return res.json({
-          status: 'success'
+          success: true
         })
       })
       .catch((err) => {
@@ -50,8 +57,17 @@ router.post('/detect', upload.single('file'), function (req, res) {
           console.log(err)
         }
 
-        return res.send('失败')
+        return res.json({
+          success: false
+        })
       })
+  })
+})
+
+router.get('/test', function(req, res) {
+
+  voiceService.text2Audio('你是不是傻了').then(() => {
+    res.send('ok')
   })
 })
 
