@@ -10,10 +10,11 @@ const APP_SECRET = baiduConfig.APP_SECRET
 const Promise = require('bluebird')
 const path = require('path')
 const fs = require('fs')
-var player = require('play-sound')()
 const knex = require('../mysql/connection.js')
+const common = require('../util/common')
 const moment = require('moment')
 const _ = require('lodash')
+const uuidv1 = require('uuid/v1')
 
 // Query db to check if any queue message
 function queryQueueAudio() {
@@ -27,7 +28,7 @@ function queryQueueAudio() {
 
         if (greeting && greeting.length === 1) {
 
-          text2Audio(greeting[0].message).then((status) => {
+          text2Audio(greeting[0].message).then((audioPath) => {
             knex.from('greetingQueue').where({
                 id: greeting[0].id
               }).update({
@@ -35,7 +36,7 @@ function queryQueueAudio() {
                 playedAt: new Date()
               })
               .then(() => {
-                resolve(status)
+                resolve(audioPath)
               })
           })
         } else {
@@ -134,19 +135,19 @@ function text2Audio(content) {
   return new Promise(function (resolve, reject) {
 
     let speechClient = new AipSpeechClient(APP_ID, APP_KEY, APP_SECRET)
-    let audioPath = path.join(__dirname, '../public/faces/audio.mp3')
+    let audioPath = path.join(__dirname, '../public/faces/audio/')
+    let audioName = `audio-${uuidv1()}.mp3`
+    let newAudioPath = path.join(__dirname, `../public/faces/audio/${audioName}`)
+    let returnPath = `/faces/audio/${audioName}`
 
     // Remove audio from last time
-    if (fs.existsSync(audioPath)) {
-      fs.unlinkSync(audioPath)
-    }
+    common.clearDir(audioPath, [])
     
     // 语音合成
     speechClient.text2audio(content).then(function (result) {
       if (result.data) {
-        fs.writeFile(audioPath, result.data, function () {
-          // $ mplayer foo.mp3 
-          resolve(true)
+        fs.writeFile(newAudioPath, result.data, function () {
+          resolve(returnPath)
         })
       } else {
         // 服务发生错误

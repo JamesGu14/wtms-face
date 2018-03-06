@@ -89,7 +89,7 @@ function multiIdentify(imgPath) {
         reject()
       }
     }).catch((err) => {
-
+      
       console.log(err)
       reject(err)
     })

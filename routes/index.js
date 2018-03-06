@@ -47,9 +47,10 @@ router.post('/detect', upload.single('file'), function (req, res) {
       .then(users => voiceService.composeGreeting(users))
       .then(userContentCombo => voiceService.queueAudioMessage(userContentCombo.content, userContentCombo.users))
       .then(() => voiceService.queryQueueAudio())
-      .then(() => {
+      .then((audioPath) => {
         return res.json({
-          success: true
+          success: true,
+          audioPath: audioPath
         })
       })
       .catch((err) => {

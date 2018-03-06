@@ -144,7 +144,7 @@ function callApi(data) {
       // audio.load()
       // audio.play()
 
-      var audio = new Audio('/faces/audio.mp3');
+      var audio = new Audio(result.audioPath);
       audio.load();
       audio.play();   
     }
