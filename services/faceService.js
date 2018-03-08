@@ -162,7 +162,7 @@ function getUsers() {
 
   return new Promise(function(resolve, reject) {
     
-    db.child.getAll().then((faces) => {
+    knex('child').select('*').then((faces) => {
 
       resolve(faces)
     }).catch(function(err) {
