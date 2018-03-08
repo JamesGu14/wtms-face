@@ -10,7 +10,6 @@ const GROUP_ID = baiduConfig.GROUP_ID
 const Promise = require('bluebird')
 const common = require('../util/common')
 const _ = require('lodash')
-const db = require('../mysql/queries/index')
 const knex = require('../mysql/connection.js')
 
 function detect(imgPath) {
