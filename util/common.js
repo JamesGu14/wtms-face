@@ -1,6 +1,7 @@
 'use strict'
 
 const fs = require('fs');
+const _ = require('lodash')
 
 // function to encode file data to base64 encoded string
 function base64Encode(file) {
@@ -29,7 +30,7 @@ function clearDir(folderPath, noDeleteFiles) {
 
 function getRandomFromList (list) {
 
-  return list[Math.floor(Math.random() * Math.floor(list.length))]
+  return list[_.random(0, list.length - 1)]
 }
 
 
