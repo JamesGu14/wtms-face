@@ -64,14 +64,13 @@ function multiIdentify(imgPath) {
           reject()
         }
 
-        let uidArr = []
+        let uidArr = _.map(faces, 'uid')
         faces.forEach(f => {
           console.log('Detected face: ' + f.uid + '')
           console.log(`Detected face: ${f.uid}, confidence: ${f.scores[0]}`)
-          uidArr.push(f.uid)
         })
 
-        // TODO: get kids' names from DB by uid
+        // get kids' names from DB by uid
         knex('child').whereIn('uid', uidArr).select('*').then(function(users) {
           if (uidArr.length > 0 && users.length <= 0) {
             console.log('Warning: UID in Baidu Cloud not in our DB')

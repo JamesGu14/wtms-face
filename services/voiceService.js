@@ -57,19 +57,12 @@ function filterRecentGreeted(users) {
       reject('No face found from DB')
     }
 
-    let childIdArr = []
-    users.forEach(u => {
-      childIdArr.push(u.id)
-    })
+    let childIdArr = _.map(users, 'id')
 
     knex.from('greetingQueue').whereIn('childId', childIdArr)
       .andWhere('createdAt', '>', moment().subtract(programConfig.recoInterval, 'seconds').format('YYYY-MM-DD HH:mm:ss')).then((result) => {
 
-        let recentPlayedChildId = []
-        result.forEach(r => {
-
-          recentPlayedChildId.push(r.childId)
-        })
+        let recentPlayedChildId = _.map(result, 'childId')
 
         resolve(_.reject(users, function (o) {
           return recentPlayedChildId.indexOf(o.id) >= 0
@@ -87,21 +80,25 @@ function composeGreeting(users) {
       reject('No users not greeted lately')
     }
 
-    let names = []
-    users.forEach(u => {
-      names.push(u.fullName)
-    })
+    let names = _.map(users, 'fullName')
 
-    let content = ''
-    if (users.length > 1) {
-      content = `早上好，${names.join('，')} ${names.length}位小朋友，你们早上好呀`
-    } else {
-      content = `早上好，${names} 小朋友`
-    }
+    knex('greetingTemplate').select('*').then(results => {
 
-    resolve({
-      content: content,
-      users: users
+      let content = common.getRandomFromList(results).template
+      
+      if (users.length > 1) {
+        content = content.replace('{name}', `，${names.join('，')} ${names.length}`)
+      } else {
+        content = content.replace('{name}', `，${names} `)
+      }
+  
+      resolve({
+        content: content,
+        users: users
+      })
+    }).catch(err => {
+      console.log(err)
+      return reject(err)
     })
   })
 }

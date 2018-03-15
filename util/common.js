@@ -27,7 +27,14 @@ function clearDir(folderPath, noDeleteFiles) {
   console.log(`Deleted all existing files at ${folderPath}`)
 }
 
+function getRandomFromList (list) {
+
+  return list[Math.floor(Math.random() * Math.floor(list.length))]
+}
+
+
 module.exports = {
   base64Encode: base64Encode,
-  clearDir: clearDir
+  clearDir: clearDir,
+  getRandomFromList: getRandomFromList
 }
