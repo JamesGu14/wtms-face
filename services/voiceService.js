@@ -160,9 +160,9 @@ function text2Audio(content) {
 }
 
 module.exports = {
-  composeGreeting: composeGreeting,
-  text2Audio: text2Audio,
-  queryQueueAudio: queryQueueAudio,
-  queueAudioMessage: queueAudioMessage,
-  filterRecentGreeted: filterRecentGreeted
+  composeGreeting,
+  text2Audio,
+  queryQueueAudio,
+  queueAudioMessage,
+  filterRecentGreeted
 }

@@ -174,10 +174,10 @@ function getUsers() {
 
 
 module.exports = {
-  detect: detect,
-  multiIdentify: multiIdentify,
-  updateUser: updateUser,
-  getGrouplist: getGrouplist,
-  getGroupUsers: getGroupUsers,
-  getUsers: getUsers
+  detect,
+  multiIdentify,
+  updateUser,
+  getGrouplist,
+  getGroupUsers,
+  getUsers
 }

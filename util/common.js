@@ -35,7 +35,7 @@ function getRandomFromList (list) {
 
 
 module.exports = {
-  base64Encode: base64Encode,
-  clearDir: clearDir,
-  getRandomFromList: getRandomFromList
+  base64Encode,
+  clearDir,
+  getRandomFromList
 }
