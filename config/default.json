@@ -15,7 +15,7 @@
     "SCENE": "main"
   },
   "programConfig": {
-    "ageThreshold": 50,
-    "recoInterval": 15
+    "ageThreshold": 20,
+    "recoInterval": 20
   }
 }
