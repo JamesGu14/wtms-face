@@ -141,7 +141,7 @@ function text2Audio(content) {
     common.clearDir(audioPath, [])
     
     // 语音合成
-    speechClient.text2audio(content).then(function (result) {
+    speechClient.text2audio(content, {spd: 5, per: 4}).then(function (result) {
       if (result.data) {
         fs.writeFile(newAudioPath, result.data, function () {
           resolve(returnPath)

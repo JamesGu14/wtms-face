@@ -6,6 +6,14 @@
     "APP_SECRET": "NGpiWt5DsSdB0u1wxS3Mi6GIYvz8Qfsk",
     "GROUP_ID": "testlib"
   }, 
+  "aiuiConfig": {
+    "APP_NAME": "wtms语音合成_web",
+    "APP_ID": "5aa3aaef",
+    "API_KEY": "57410e678a06ae653b51d7ba38ec0bff",
+    "AIUI_HOST": "http://api.xfyun.cn",
+    "VOICE_COMB_ENDPOINT": "/v1/aiui/v1/text_semantic",
+    "SCENE": "main"
+  },
   "programConfig": {
     "ageThreshold": 50,
     "recoInterval": 15

@@ -55,12 +55,14 @@ function multiIdentify(imgPath) {
 
     faceClient.multiIdentify(GROUP_ID, stream, options).then((result) => {
       if (result.result != null && result.result.length > 0) {
-        let faces = _.filter(result.result, function(u) {
-          return u.scores.length > 0 && u.scores[0] > 80
-        })
+        // let faces = _.filter(result.result, function(u) {
+        //   return u.scores.length > 0 && u.scores[0] > 80
+        // })
+
+        let faces = result.result.filter(u => u.scores.length > 0 && u.scores[0] > 75)
 
         if (faces.length <= 0) {
-          console.log('No faces matching over 80%')
+          console.log('No faces matching over 75%')
           reject()
         }
 
